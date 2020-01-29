@@ -1,0 +1,16 @@
+version: '3'
+services:
+  publisher:
+    build:
+      context: ./
+    image: 'ancolin/publisher:latest'
+    ports:
+      - '10000:80'
+    depends_on:
+      - redis
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+    volumes:
+      - './redis_data:/data'
