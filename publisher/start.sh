@@ -1,3 +1,2 @@
-#!/bin/ash
-
-/usr/local/bin/uwsgi --http=0.0.0.0:80 --wsgi-file=/app.py --callable=app
+mkdir log
+/usr/local/bin/uwsgi --ini uwsgi.ini --logto log/uwsgi.log

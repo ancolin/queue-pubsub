@@ -5,6 +5,7 @@ RUN apk add build-base libffi-dev openssl-dev --no-cache \
  && python -m pip install -r requirements \
  && apk del --purge build-base libffi-dev openssl-dev
 
-COPY publisher/* /
+COPY publisher/* /publisher/
 
-CMD /bin/sh /start.sh
+WORKDIR publisher
+CMD /bin/sh start.sh
