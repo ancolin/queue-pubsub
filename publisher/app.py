@@ -10,12 +10,15 @@ app = Flask(__name__)
 def orderQueue():
     result = "NG"
     message = ""
-    try:
-        r = redis.Redis(host='redis', port=6379, db=0)
-        r.lpush('orderQueue', json.dumps(request.json))
-        result = "OK"
-    except Exception as e:
-        message = e
+    if not request.headers.get("Content-Type") == "application/json":
+        message = "not supported Content-Type."
+    else:
+        try:
+            r = redis.Redis(host='redis', port=6379, db=0)
+            r.lpush('orderQueue', json.dumps(request.json))
+            result = "OK"
+        except Exception as e:
+            message = e
 
     if result == "OK":
         response = {"result": result}
