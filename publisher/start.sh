@@ -1,2 +1,2 @@
 mkdir log
-/usr/local/bin/uwsgi --ini uwsgi.ini --logto log/uwsgi.log
+uwsgi --ini uwsgi.ini --logto log/uwsgi.log
