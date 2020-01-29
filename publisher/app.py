@@ -11,7 +11,7 @@ def orderQueue():
     result = "NG"
     message = ""
     try:
-        r = redis.Redis(host='127.0.0.1', port=6379, db=0)
+        r = redis.Redis(host='redis', port=6379, db=0)
         r.lpush('orderQueue', json.dumps(request.json))
         result = "OK"
     except Exception as e:
