@@ -71,16 +71,30 @@ def popQueue():
             message = 'Mandatory keys is missing.'
         else:
             try:
-                # pop queue
-                r = redis.Redis(host='redis', port=6379, db=0)
-                queue = r.rpop(params['order'])
+                integer_limit = 1
+                if 'limit' in params:
+                    try:
+                        integer_limit = int(params['limit'])
+                    except Exception as e:
+                        integer_limit = 0
+                        message = 'Invalid data type: limit'
+                        print('Error: ', e)
 
-                result = 'OK'
-                if queue is None:
-                    message = 'No queue.'
-                else:
-                    message = json.loads(queue)
-                status_code = 200
+                # pop queue
+                if integer_limit > 0:
+                    queues = []
+                    while integer_limit > 0:
+                        r = redis.Redis(host='redis', port=6379, db=0)
+                        queue = r.rpop(params['order'])
+                        if queue is not None:
+                            queues.append(json.loads(queue))
+                            integer_limit -= 1
+                        else:
+                            integer_limit = 0
+
+                    message = queues
+                    result = 'OK'
+                    status_code = 200
             except Exception as e:
                 status_code = 500
                 message = 'Internal server error.'
@@ -92,7 +106,7 @@ def popQueue():
 
     # response
     if result == "OK":
-        response = {"result": result, 'queue': message}
+        response = {"result": result, 'queues': message}
     else:
         response = {"result": result, "errors": message}
     return jsonify(response), status_code
