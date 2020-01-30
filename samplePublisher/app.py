@@ -5,37 +5,37 @@ import urllib.request
 import datetime
 
 # order
-order = 'sample'
+str_order = 'sample'
 
 # Request setting
-url = 'http://store/'
-method = 'POST'
-headers = {
+str_url = 'http://store/'
+str_method = 'POST'
+dict_headers = {
     'Content-Type': 'application/json'
 }
 
 # process something
 
 # create order queue
-sample_id = str(uuid.uuid4())
-queue = {
-    'order': order,
+str_id = str(uuid.uuid4())
+dict_queue = {
+    'order': str_order,
     'receipt': {
         'sample_datetime': datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'),
-        'sample_id': sample_id
+        'sample_id': str_id
     }
 }
 
 try:
     # Request order
     request = urllib.request.Request(
-        url,
-        data=json.dumps(queue).encode('utf-8'),
-        method=method,
-        headers=headers
+        str_url,
+        data=json.dumps(dict_queue).encode('utf-8'),
+        method=str_method,
+        headers=dict_headers
     )
     with urllib.request.urlopen(request) as response:
-        response_body = response.read().decode('utf-8')
-        print('Response: ', response_body)
+        str_response = response.read().decode('utf-8')
+        print('Response: ', str_response)
 except Exception as e:
     print('Error: ', e)
