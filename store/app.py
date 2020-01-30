@@ -12,44 +12,47 @@ app = Flask(__name__)
 def orderQueue():
     result = "NG"
     message = ""
+
+    # check Content-Type
     if not request.headers.get("Content-Type") == "application/json":
         message = "not supported Content-Type."
     else:
         try:
             payload = request.json
-            string_order = ''
-            dict_receipt = {}
 
-            try:
-                string_order = payload['order']
-                dict_receipt = payload['receipt']
-            except Exception as e:
+            # check Request
+            if 'order' not in payload or 'receipt' not in payload:
                 message = 'Mandatory keys is missing.'
-                print(e)
+            else:
+                try:
+                    # push queue
+                    string_id = str(uuid.uuid4())
+                    queue = {
+                        'datetime': datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'),
+                        'id': string_id,
+                        'receipt': payload['receipt']
+                    }
+                    r = redis.Redis(host='redis', port=6379, db=0)
+                    r.lpush(payload['order'], json.dumps(queue))
 
-            try:
-                # add pushed datetime and uuid
-                string_pushed_datetime = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-
-                queue = {'datetime': string_pushed_datetime, 'uuid': str(uuid.uuid4()), 'receipt': dict_receipt}
-
-                # push queue
-                r = redis.Redis(host='redis', port=6379, db=0)
-                r.lpush(string_order, json.dumps(queue))
-                result = "OK"
-            except Exception as e:
-                message = 'Internal server error.'
-                print(e)
+                    result = 'OK'
+                    message = {
+                        'order': payload['order'],
+                        'id': string_id
+                    }
+                except Exception as e:
+                    message = 'Internal server error.'
+                    print('Error: ', e)
 
         except Exception as e:
             message = 'Bad request.'
-            print(e)
+            print('Error: ', e)
 
+    # response
     if result == "OK":
-        response = {"result": result}
+        response = {"result": result, 'queue': message}
     else:
         response = {"result": result, "errors": message}
-
     return jsonify(response)
 
 
