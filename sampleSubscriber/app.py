@@ -1,33 +1,30 @@
 # coding: utf-8
-import uuid
 import json
 import urllib.request
-import datetime
 
 # order
-order = 'sample'
+str_order = 'sample'
+int_limit = 3
 
 # Request setting
-url = 'http://store/'
-method = 'GET'
+str_url = 'http://store/'
+str_method = 'GET'
 
 try:
     # Request order
     request = urllib.request.Request(
-        url + '?order=' + order,
-        method=method
+        str_url + '?order=' + str_order + '&limit=' + str(int_limit),
+        method=str_method
     )
     with urllib.request.urlopen(request) as response:
-        response_json = json.loads(response.read().decode('utf-8'))
-        if 'queue' in response_json and type(response_json['queue']) == dict:
-            # process something
-            print('Queue: ', response_json['queue'])
-        elif 'queue' in response_json and type(response_json['queue']) == str:
-            # process something
-            print('Queue: ', response_json['queue'])
+        dict_response = json.loads(response.read().decode('utf-8'))
+        if 'result' in dict_response and dict_response['result'] == 'OK':
+            list_queues = dict_response['queues']
+            for dict_queue in list_queues:
+                # process something
+                print('Queue: ', dict_queue)
         else:
-            # process something
-            print('Queue: ', response_json['queue'])
+            print('Error: ', dict_response)
 
 except Exception as e:
     print('Error: ', e)
