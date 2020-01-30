@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def orderQueue():
     result = "NG"
-    message = ""
+    status_code = 400
 
     # check Content-Type
     if not request.headers.get("Content-Type") == "application/json":
@@ -40,7 +40,9 @@ def orderQueue():
                         'order': payload['order'],
                         'id': string_id
                     }
+                    status_code = 200
                 except Exception as e:
+                    status_code = 500
                     message = 'Internal server error.'
                     print('Error: ', e)
 
@@ -53,7 +55,7 @@ def orderQueue():
         response = {"result": result, 'queue': message}
     else:
         response = {"result": result, "errors": message}
-    return jsonify(response)
+    return jsonify(response), status_code
 
 
 if __name__ == '__main__':
