@@ -18,3 +18,9 @@ services:
     image: 'ancolin/samplepublisher:latest'
     depends_on:
       - store
+  subscriber:
+    build:
+      context: ./sampleSubscriber
+    image: 'ancolin/samplesubscriber:latest'
+    depends_on:
+      - store
