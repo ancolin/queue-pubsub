@@ -4,22 +4,30 @@ import json
 import urllib.request
 import datetime
 
-sample_id = str(uuid.uuid4())
-queue = {
-    'order': 'sample',
-    'receipt': {
-        'sample_datetime': datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'),
-        'sample_id': sample_id
-    }
-}
+# order
+order = 'sample'
 
+# Request setting
 url = 'http://store/'
 method = 'POST'
 headers = {
     'Content-Type': 'application/json'
 }
 
+# process something
+
+# create order queue
+sample_id = str(uuid.uuid4())
+queue = {
+    'order': order,
+    'receipt': {
+        'sample_datetime': datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'),
+        'sample_id': sample_id
+    }
+}
+
 try:
+    # Request order
     request = urllib.request.Request(
         url,
         data=json.dumps(queue).encode('utf-8'),
