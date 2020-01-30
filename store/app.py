@@ -16,16 +16,34 @@ def orderQueue():
         message = "not supported Content-Type."
     else:
         try:
-            # add pushed datetime and uuid
-            string_pushed_datetime = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            queue = {'datetime': string_pushed_datetime, 'uuid': str(uuid.uuid4()), 'body': request.json}
+            payload = request.json
+            string_order = ''
+            dict_receipt = {}
 
-            # push queue
-            r = redis.Redis(host='redis', port=6379, db=0)
-            r.lpush('orderQueue', json.dumps(queue))
-            result = "OK"
+            try:
+                string_order = payload['order']
+                dict_receipt = payload['receipt']
+            except Exception as e:
+                message = 'Mandatory keys is missing.'
+                print(e)
+
+            try:
+                # add pushed datetime and uuid
+                string_pushed_datetime = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+
+                queue = {'datetime': string_pushed_datetime, 'uuid': str(uuid.uuid4()), 'receipt': dict_receipt}
+
+                # push queue
+                r = redis.Redis(host='redis', port=6379, db=0)
+                r.lpush(string_order, json.dumps(queue))
+                result = "OK"
+            except Exception as e:
+                message = 'Internal server error.'
+                print(e)
+
         except Exception as e:
-            message = str(e)
+            message = 'Bad request.'
+            print(e)
 
     if result == "OK":
         response = {"result": result}
