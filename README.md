@@ -26,7 +26,8 @@ Python 3.6
 `curl -X POST -d '{"order": "some order", "receipt": {"something":"something"}}' http://{{store}}`
 1. pop queue
 `curl -X GET http://{{store}}?order=some order&limit=1`
-## sample publisher
+## sample publisher with HTTP Request
 `docker-compose run --rm publisher`
-## sample subscriber
+## sample subscriber with HTTP Request
 `docker-compose run --rm subscriber`
+
