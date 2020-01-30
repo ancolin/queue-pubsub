@@ -1,9 +1,9 @@
 version: '3'
 services:
-  publisher:
+  store:
     build:
       context: ./
-    image: 'ancolin/publisher:latest'
+    image: 'ancolin/store:latest'
     ports:
       - '5000:80'
     depends_on:

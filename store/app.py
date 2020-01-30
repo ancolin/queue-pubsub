@@ -21,7 +21,7 @@ def orderQueue():
             queue = {'datetime': string_pushed_datetime, 'uuid': str(uuid.uuid4()), 'body': request.json}
 
             # push queue
-            r = redis.Redis(host='redis', port=6379, db=0)
+            r = redis.Redis(host='127.0.0.1', port=6379, db=0)
             r.lpush('orderQueue', json.dumps(queue))
             result = "OK"
         except Exception as e:
@@ -32,7 +32,7 @@ def orderQueue():
     else:
         response = {"result": result, "errors": message}
 
-    return jsonify(ResultSet=response)
+    return jsonify(response)
 
 
 if __name__ == '__main__':
