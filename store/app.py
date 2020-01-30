@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 @app.route('/', methods=['POST'])
-def orderQueue():
+def pushQueue():
     result = "NG"
     status_code = 400
 
@@ -49,6 +49,46 @@ def orderQueue():
         except Exception as e:
             message = 'Bad request.'
             print('Error: ', e)
+
+    # response
+    if result == "OK":
+        response = {"result": result, 'queue': message}
+    else:
+        response = {"result": result, "errors": message}
+    return jsonify(response), status_code
+
+
+@app.route('/', methods=['GET'])
+def popQueue():
+    result = 'NG'
+    status_code = 400
+
+    try:
+        params = request.args
+
+        # check Request
+        if 'order' not in params:
+            message = 'Mandatory keys is missing.'
+        else:
+            try:
+                # pop queue
+                r = redis.Redis(host='redis', port=6379, db=0)
+                queue = r.rpop(params['order'])
+
+                result = 'OK'
+                if queue is None:
+                    message = 'No queue.'
+                else:
+                    message = json.loads(queue)
+                status_code = 200
+            except Exception as e:
+                status_code = 500
+                message = 'Internal server error.'
+                print('Error: ', e)
+
+    except Exception as e:
+        message = 'Bad request.'
+        print('Error: ', e)
 
     # response
     if result == "OK":
