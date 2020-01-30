@@ -12,3 +12,9 @@ services:
     image: 'redis:latest'
     volumes:
       - './redis_data:/data'
+  publisher:
+    build:
+      context: ./samplePublisher
+    image: 'ancolin/samplepublisher:latest'
+    depends_on:
+      - store
