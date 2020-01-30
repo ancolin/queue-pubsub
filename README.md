@@ -18,4 +18,15 @@ Python 3.6
     * Store が Queue を push する際に値として使用する
     * Subscriber がジョブを判断するために使用する
     * receipt の内容は Publisher と Subscriber 次第とする
-    
+# Run
+## store
+1. boot store api
+`docker-compose up -d store`
+1. push queue
+`curl -X POST -d '{"order": "some order", "receipt": {"something":"something"}}' http://{{store}}`
+1. pop queue
+`curl -X GET http://{{store}}?order=some order&limit=1`
+## sample publisher
+`docker-compose run --rm publisher`
+## sample subscriber
+`docker-compose run --rm subscriber`
